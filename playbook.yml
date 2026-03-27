@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Web App</title>
-</head>
-<body>
-    <h1>🚀 Deployed using Ansible!</h1>
-    <p>This is a simple web application.</p>
-</body>
-</html>
+- name: Deploy Simple Web Application
+  hosts: web
+  become: yes
+
+  tasks:
+
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy web application file
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
